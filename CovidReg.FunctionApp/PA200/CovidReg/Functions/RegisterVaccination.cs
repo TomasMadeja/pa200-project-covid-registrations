@@ -32,13 +32,14 @@ namespace CovidReg.FunctionApp.PA200.CovidReg.Functions
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
+            string location = data?.location;
             string email = data?.email;
             string dateString = data?.date;
 
-            if (email == null || dateString == null)
+            if (location == null || email == null || dateString == null)
             {
                 return new BadRequestObjectResult(
-                    "Please pass an email (string) and date (ISO string) in request body"
+                    "Please pass an email (string) and date (ISO string) and location (string) in request body"
                     );
             }
 
@@ -51,7 +52,7 @@ namespace CovidReg.FunctionApp.PA200.CovidReg.Functions
 
             try
             {
-                _scheduleService.RegisterVaccination(email, date);
+                _scheduleService.RegisterVaccination(location, email, date);
                 return new OkObjectResult("Reservation successful");
             }
             catch (PatientNotFoundException)

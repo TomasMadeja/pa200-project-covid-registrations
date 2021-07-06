@@ -3,12 +3,14 @@ on:
   push:
     branches:
       - main
+env:
+  AZURE_FUNCTIONAPP_NAME: pa200-project-covid-registrations
   
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env:
-      app-name: pa200-project-covid-registrations
     steps:
       - name: Azure Functions Action
         uses: Azure/functions-action@v1.4.0
+        with:
+          app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}

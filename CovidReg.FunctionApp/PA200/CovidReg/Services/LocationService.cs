@@ -16,12 +16,11 @@ namespace CovidReg.FunctionApp.Pa200.CovidReg.Services
         {
             string tableName = "Locations";
             _tableClient  = new TableClient(
-                new Uri(""),
-                tableName,
-                new TableSharedKeyCredential("", ""));
+                Environment.GetEnvironmentVariable("table_connection_string"),
+                tableName);
         }
 
-        public Location FindLocation(string name)
+        public Location GetLocation(string name)
         {
             try
             {
@@ -33,9 +32,9 @@ namespace CovidReg.FunctionApp.Pa200.CovidReg.Services
             }
         }
 
-        public void RegisterLocation(string name, int dailyCapacity)
+        public void RegisterLocation(string name)
         {
-            var location = new Location(name, "", name, dailyCapacity);
+            var location = new Location(name, "", name);
             try
             {
                 _tableClient.AddEntity(location);

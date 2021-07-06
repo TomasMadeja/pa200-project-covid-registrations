@@ -33,21 +33,20 @@ namespace CovidReg.FunctionApp.PA200.CovidReg.Functions
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             
             string name = data?.name;
-            int? capacity = data?.capacity;
 
-            if (name == null || !capacity.HasValue)
+            if (name == null)
             {
                 return new BadRequestObjectResult(
-                    "Please pass json body with keys name (string) and capacity (int)"
+                    "Please pass json body with keys name (string)"
                     );
             }
 
             try
             {
-                _locationService.RegisterLocation(name, capacity.Value);
+                _locationService.RegisterLocation(name);
                 return new OkObjectResult($"Location {name} created");
             }
-            catch (EntityExistsException ex)
+            catch (EntityExistsException)
             {
                 return new BadRequestObjectResult("Location already exists");
             }

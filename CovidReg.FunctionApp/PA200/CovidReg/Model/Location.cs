@@ -11,25 +11,22 @@ namespace CovidReg.FunctionApp.PA200.CovidReg.Model
             
         }
 
-        public Location(string name, int capacity)
+        public Location(string name)
         {
             Name = name;
-            Capacity = capacity;
         }
 
-        public Location(string partitionKey, string rowKey, string name, int capacity)
+        public Location(string partitionKey, string rowKey, string name)
         {
             Name = name;
             PartitionKey = partitionKey;
-            Capacity = capacity;
             RowKey = rowKey;
         }
 
-        private string Name { get; set; }
         public string PartitionKey { get; set; }
-        private int Capacity { get; set; }
         public string RowKey { get; set; }
         public DateTimeOffset? Timestamp { get; set; }
         public ETag ETag { get; set; }
+        public string Name { get; set; }
     }
 }

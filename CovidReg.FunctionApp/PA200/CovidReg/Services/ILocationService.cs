@@ -4,8 +4,8 @@ namespace CovidReg.FunctionApp.Pa200.Covidreg.Services
 {
     public interface ILocationService
     {
-        public Location FindLocation(string name);
+        public Location GetLocation(string name);
 
-        public void RegisterLocation(string name, int dailyCapacity);
+        public void RegisterLocation(string name);
     }
 }

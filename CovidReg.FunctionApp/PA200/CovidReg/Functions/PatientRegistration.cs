@@ -47,7 +47,7 @@ namespace CovidReg.FunctionApp.PA200.CovidReg.Functions
                 _patientService.RegisterPatient(name, email);
                 return new OkObjectResult($"Location {name} created");
             }
-            catch (EntityExistsException ex)
+            catch (EntityExistsException)
             {
                 return new BadRequestObjectResult("Location already exists");
             }

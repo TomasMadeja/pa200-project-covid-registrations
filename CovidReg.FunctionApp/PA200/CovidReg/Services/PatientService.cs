@@ -14,9 +14,8 @@ namespace CovidReg.FunctionApp.PA200.CovidReg.Services
         {
             string tableName = "Patients";
             _tableClient  = new TableClient(
-                new Uri(""),
-                tableName,
-                new TableSharedKeyCredential("", ""));
+                Environment.GetEnvironmentVariable("table_connection_string"),
+                tableName);
         }
 
         public Patient GetPatient(string email) 

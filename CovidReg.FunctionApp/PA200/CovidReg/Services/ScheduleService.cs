@@ -5,6 +5,7 @@ using Azure;
 using Azure.Data.Tables;
 using CovidReg.FunctionApp.PA200.CovidReg.Exceptions;
 using CovidReg.FunctionApp.PA200.CovidReg.Model;
+using CovidReg.FunctionApp.Pa200.Covidreg.Services;
 
 namespace CovidReg.FunctionApp.PA200.CovidReg.Services
 {
@@ -14,16 +15,17 @@ namespace CovidReg.FunctionApp.PA200.CovidReg.Services
         
         private readonly TableClient _scheduleTable;
         private readonly IPatientService _patientService;
+        private readonly ILocationService _locationService;
         
-        public ScheduleService(IPatientService patientService)
+        public ScheduleService(IPatientService patientService, ILocationService locationService)
         {
             _patientService = patientService;
+            _locationService = locationService;
             
             string tableName = "Scheadule";
             _scheduleTable  = new TableClient(
-                new Uri(""),
-                tableName,
-                new TableSharedKeyCredential("", ""));
+                Environment.GetEnvironmentVariable("table_connection_string"),
+                tableName);
         }
 
         public void RegisterVaccination(string location, string email, DateTime firstDate)
@@ -69,11 +71,43 @@ namespace CovidReg.FunctionApp.PA200.CovidReg.Services
             }
         }
 
-        public IEnumerator<ReservationSlot> GetEmptySlots(string location, DateTime fromDate, DateTime toDate)
+        public IEnumerable<ReservationSlot> GetEmptySlots(string location, DateTime fromDate, DateTime toDate)
         {
             return _scheduleTable.Query<ReservationSlot>(
                 $"PartitionKey eq {location} and RowKey ge {fromDate:o} and RowKey le {toDate:o}"
-                ).GetEnumerator();
+                ).ToList();
+        }
+
+        public void GenerateEmptySlots(
+            string locationName, 
+            DateTime fromDate, 
+            DateTime toDate, 
+            int intervalMinutes, 
+            int intervalCapacity
+            )
+        {
+            Location location;
+            try
+            {
+                location = _locationService.GetLocation(locationName);
+            }
+            catch (NotFoundException ex)
+            {
+                throw new LocationNotFoundException($"Location {locationName} not found", ex);
+            }
+
+            DateTime iDate = fromDate;
+            while (iDate < toDate)
+            {
+                ReservationSlot iSlot = new ReservationSlot(
+                    location.Name, 
+                    iDate.ToString("o"), 
+                    iDate, 
+                    intervalCapacity
+                    );
+                _scheduleTable.AddEntity(iSlot);
+                iDate = iDate.AddMinutes(intervalMinutes);
+            }
         }
 
         private ReservationSlot GetReservationSlot(string location, DateTime date)

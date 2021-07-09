@@ -49,17 +49,11 @@ namespace CovidReg.FunctionApp.PA200.CovidReg.Functions
             DateTime toDate;
             try
             {
-                fromDate = DateTime.ParseExact(
-                    fromDateRaw,
-                    "o",
-                    CultureInfo.InvariantCulture,
-                    DateTimeStyles.None
+                fromDate = DateTime.Parse(
+                    fromDateRaw
                 );
-                toDate = DateTime.ParseExact(
-                    toDateRaw,
-                    "o",
-                    CultureInfo.InvariantCulture,
-                    DateTimeStyles.None
+                toDate = DateTime.Parse(
+                    toDateRaw
                 );
             }
             catch (FormatException)
@@ -67,7 +61,13 @@ namespace CovidReg.FunctionApp.PA200.CovidReg.Functions
                 return new BadRequestObjectResult("Provide date in proper format");
             }
 
-            IEnumerable<ReservationSlot> slots = _scheduleService.GetEmptySlots(location, fromDate, toDate);
+            IEnumerable<ReservationSlot> slots;
+            try {
+                slots = _scheduleService.GetEmptySlots(location, fromDate, toDate);
+            } catch (Exception ex) {
+                log.LogError(ex.ToString());
+                throw ex;
+            }
             List<ReservationSlotDto> slotList = new List<ReservationSlotDto>();
             foreach (ReservationSlot slot in slots)
             {

@@ -32,7 +32,7 @@ namespace CovidReg.FunctionApp.PA200.CovidReg.Services
 
         public void RegisterPatient(string name, string email)
         {
-            var patient = new Patient(name, "", name, email);
+            var patient = new Patient(email, "", name, email);
             try
             {
                 _tableClient.AddEntity(patient);

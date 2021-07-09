@@ -45,11 +45,12 @@ namespace CovidReg.FunctionApp.PA200.CovidReg.Functions
             try
             {
                 _patientService.RegisterPatient(name, email);
-                return new OkObjectResult($"Location {name} created");
+                return new OkObjectResult($"User {email} created");
             }
-            catch (EntityExistsException)
+            catch (EntityExistsException ex)
             {
-                return new BadRequestObjectResult("Location already exists");
+                log.LogInformation(ex.ToString());
+                return new BadRequestObjectResult("User already exists");
             }
             
         }

@@ -46,15 +46,15 @@ namespace CovidReg.FunctionApp.PA200.CovidReg.Services
                 throw new PatientNotFoundException($"Patient registered to ${email} not found", ex);
             }
 
-            if (patient.Appointments.Count != 0)
+            if (patient.GetAppointments().Count != 0)
             {
                 throw new AlreadyRegisteredException($"Patient already registered");
             }
             
-            var appointments = new List<DateTime>();
-            appointments.Add(firstDate);
-            appointments.Add(firstDate.AddDays(NEXT_VACCINATION_DAY_COUNT));
-            patient.Appointments = appointments;
+            var appointments = new List<string>();
+            appointments.Add(firstDate.ToString("o"));
+            appointments.Add(firstDate.AddDays(NEXT_VACCINATION_DAY_COUNT).ToString("o"));
+            patient.SetAppointments(appointments);
             
             slot.CurrentCapacity--;
             _scheduleTable.UpsertEntity(slot);
@@ -74,7 +74,7 @@ namespace CovidReg.FunctionApp.PA200.CovidReg.Services
         public IEnumerable<ReservationSlot> GetEmptySlots(string location, DateTime fromDate, DateTime toDate)
         {
             return _scheduleTable.Query<ReservationSlot>(
-                $"PartitionKey eq {location} and RowKey ge {fromDate:o} and RowKey le {toDate:o}"
+                $"PartitionKey eq '{location}' and RowKey ge '{fromDate:o}' and RowKey le '{toDate:o}'"
                 ).ToList();
         }
 

@@ -50,17 +50,11 @@ namespace CovidReg.FunctionApp.PA200.CovidReg.Functions
             DateTime toDate;
             try
             {
-                fromDate = DateTime.ParseExact(
-                    fromDateRaw,
-                    "o",
-                    CultureInfo.InvariantCulture,
-                    DateTimeStyles.None
+                fromDate = DateTime.Parse(
+                    fromDateRaw
                 );
-                toDate = DateTime.ParseExact(
-                    toDateRaw,
-                    "o",
-                    CultureInfo.InvariantCulture,
-                    DateTimeStyles.None
+                toDate = DateTime.Parse(
+                    toDateRaw
                 );
             }
             catch (FormatException)

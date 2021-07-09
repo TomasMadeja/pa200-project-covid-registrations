@@ -17,7 +17,7 @@ namespace CovidReg.FunctionApp.PA200.CovidReg.Functions
     {
         private readonly ILocationService _locationService;
 
-        LocationRegistration(ILocationService locationService)
+        public LocationRegistration(ILocationService locationService)
         {
             _locationService = locationService;
         }

@@ -43,11 +43,8 @@ namespace CovidReg.FunctionApp.PA200.CovidReg.Functions
                     );
             }
 
-            DateTime date = DateTime.ParseExact(
-                dateString, 
-                "o", 
-                CultureInfo.InvariantCulture, 
-                DateTimeStyles.None
+            DateTime date = DateTime.Parse(
+                dateString
                 );
 
             try
